@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/issue/style.css" />
+    <title>Darba Zurnals</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <a href="/submit_action">Submit Action</a>
+      <h2>SUBMIT ISSUE</h2>
+      <form action="#">
+        <h3>Name</h3>
+        <div class="input-box">
+          <input type="text" id="name" placeholder="Name" value="" required />
+        </div>
+        <h3>Source</h3>
+        <div class="input-box">
+          <select placeholder="Source" id="source" value="" required>
+            <option></option>
+          </select>
+        </div>
+        <h3>User</h3>
+        <div class="input-box">
+          <select placeholder="User" id="user" value="" required>
+            <option></option>
+          </select>
+        </div>
+        <h3>Object</h3>
+        <div class="input-box">
+          <select placeholder="Object" id="object" value="" required>
+            <option></option>
+          </select>
+        </div>
+        <h3>Device</h3>
+        <div class="input-box">
+          <select placeholder="Device" id="device" value="" required>
+            <option></option>
+          </select>
+        </div>
+        <h3>Type of issue</h3>
+        <div class="input-box">
+          <select placeholder="Type of issue" id="typeofissue" value="" required>
+            <option></option>
+          </select>
+        </div>
+        <h3>Note</h3>
+        <div class="input-box remark">
+          <textarea type="text" placeholder="Note" id="notes" value="" required></textarea>
+        </div>
+        <div class="input-box button">
+          <button type="submit" onclick="submit_data()" class="submit_button" value="">Submit</button>
+        </div>
+      </form>
+    </div>
+    <div class="wrappert">
+      <table class="table">
+        <thead>
+          <tr class="tr">
+            <th>ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>User</th>
+            <th>Source</th>
+            <th>Name</th>
+            <th>Object</th>
+            <th>Device</th>
+            <th>Type of Issue</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody class="issues"></tbody>
+      </table>
+    </div>
+  </body>
+  <script type="text/javascript">
+    const Table = document.querySelector(`.issues`);
+    const Input_name = document.querySelector(`#name`);
+    const Input_source = document.querySelector(`#source`);
+    const Input_user = document.querySelector(`#user`);
+    const Input_object = document.querySelector(`#object`);
+    const Input_device = document.querySelector(`#device`);
+    const Input_typeofissue = document.querySelector(`#typeofissue`);
+    const Input_notes = document.querySelector(`#notes`);
+
+    const GetData = async function () {
+      const UserData = await fetch(`/user`);
+      const UserJSON = await UserData.json();
+
+      for (let i = 0; i < UserJSON.length; i++) {
+        Input_name.insertAdjacentHTML(
+          `beforeend`,
+          `<option value="${UserJSON[i].id}">${UserJSON[i].vards} ${UserJSON[i].uzv}</option>`
+        );
+      }
+
+      const SourceData = await fetch(`/source`);
+      const SourceJSON = await SourceData.json();
+
+
+      for (let i = 0; i < SourceJSON.length; i++) {
+        Input_source.insertAdjacentHTML(
+          `beforeend`,
+          `<option value="${SourceJSON[i].id}">${SourceJSON[i].name_lv}</option>`
+        );
+      }
+
+      const ObjectData = await fetch(`/object`);
+      const ObjectJSON = await ObjectData.json();
+
+      for (let i = 0; i < ObjectJSON.length; i++) {
+        Input_object.insertAdjacentHTML(
+          `beforeend`,
+          `<option value="${ObjectJSON[i].id}">${ObjectJSON[i].name}</option>`
+        );
+      }
+      
+      const DeviceData = await fetch(`/device`);
+      const DeviceJSON = await DeviceData.json();
+
+      for (let i = 0; i < DeviceJSON.length; i++) {
+        Input_device.insertAdjacentHTML(
+          `beforeend`,
+          `<option value="${DeviceJSON[i].id}">${DeviceJSON[i].name_lv}</option>`
+        );
+      }
+
+      const TypeData = await fetch(`/type`);
+      const TypeJSON = await TypeData.json();
+
+      for (let i = 0; i < TypeJSON.length; i++) {
+        Input_typeofissue.insertAdjacentHTML(
+          `beforeend`,
+          `<option value="${TypeJSON[i].id}">${TypeJSON[i].name_lv}</option>`
+        );
+      }
+
+      const IssueList = await fetch(`/issue`);
+      const IssueJSON = await IssueList.json();
+
+      for (let i = 0; i < IssueJSON.length; i++) {
+        const row = Table.insertRow(0);
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        const cell3 = row.insertCell(2);
+        const cell4 = row.insertCell(3);
+        const cell5 = row.insertCell(4);
+        const cell6 = row.insertCell(5);
+        const cell7 = row.insertCell(6);
+        const cell8 = row.insertCell(7);
+        const cell9 = row.insertCell(8);
+        const cell10 = row.insertCell(9);
+        cell1.innerHTML = `${IssueJSON[i].id}`;
+        cell2.innerHTML = `${IssueJSON[i].date.slice(0, 10)}`;
+        cell3.innerHTML = `${IssueJSON[i].time}`;
+        cell4.innerHTML = `${IssueJSON[i].id_user}`;
+        cell5.innerHTML = `${IssueJSON[i].id_source}`;
+        cell6.innerHTML = `${IssueJSON[i].name}`;
+        cell7.innerHTML = `${IssueJSON[i].id_obj}`;
+        cell8.innerHTML = `${IssueJSON[i].id_device}`;
+        cell9.innerHTML = `${IssueJSON[i].id_type}`;
+        cell10.innerHTML = `${IssueJSON[i].note}`;
+      }
+    };
+
+    GetData();
+
+    function submit_data() {
+      console.log(1)
+
+
+      if (!Input_name.value || !Input_source.value || !Input_user.value || !Input_object.value || !Input_device.value || !Input_typeofissue.value || !Input_notes.value) {
+        console.log("missing input")
+        return
+      }
+
+      const date = new Date();
+      const dateFormat =
+        date.getFullYear() +
+        "-" +
+        ((date.getMonth() + 1).length != 2
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) +
+        "-" +
+        (date.getDate().length != 2 ? "0" + date.getDate() : date.getDate());
+      const time = new Date();
+
+      const obj = {
+        date: dateFormat,
+        time: time.toLocaleTimeString(),
+        name: Input_name.value,
+        source: Input_source.value,
+        user: Input_user.value,
+        object: Input_object.value,
+        device: Input_device.value,
+        typeofissue: Input_typeofissue.value,
+        remarks: Input_notes.value,
+      };
+
+      console.log(obj);
+
+      fetch(`/post_issue`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(obj),
+      })
+        .then((result) => result.json())
+        .then((result) => console.log(result));
+        location.reload();
+    };
+  </script>
+</html>
